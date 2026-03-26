@@ -140,6 +140,8 @@ The package installs a companion service named `codex-update-manager`.
 - When a new DMG is detected, it rebuilds a local native package using the bundled `update-builder` files under `/opt/codex-desktop/update-builder`.
 - If the app is open, the update stays pending until the Electron process exits.
 - When the app is closed, the service requests elevation with `pkexec` only for the final install step.
+- If the privileged install fails or the auth dialog is dismissed, the updater stays in `failed` instead of re-prompting every 15 seconds.
+- Package removal now makes a best-effort attempt to stop and disable the user service for active desktop sessions.
 
 You can inspect the service state with:
 
@@ -191,6 +193,7 @@ The launcher also writes logs to:
 | `CODEX_CLI_PATH` error | Install the CLI with `npm i -g @openai/codex` |
 | GPU/Vulkan/Wayland errors | The launcher now sets `--ozone-platform-hint=auto`, `--disable-gpu-sandbox`, and `--enable-features=WaylandWindowDecorations` by default. If you need X11 explicitly, try `./codex-app/start.sh --ozone-platform=x11` |
 | Sandbox errors | The launcher already sets `--no-sandbox` |
+| `codex-update-manager` keeps running after package removal | Run `systemctl --user disable --now codex-update-manager.service` once in the affected session, then confirm `/opt/codex-desktop` is gone |
 
 ## Validation
 

@@ -36,6 +36,10 @@ The current working flow is:
   RPM spec template.
 - `packaging/linux/codex-update-manager.service`
   User-level `systemd` unit for the local update manager.
+- `packaging/linux/codex-update-manager.prerm`
+  Debian maintainer script that stops or disables the user service during removal.
+- `packaging/linux/codex-update-manager.postrm`
+  Debian maintainer script that reloads affected user managers after removal.
 - `assets/codex.png`
   App icon used in native packages.
 - `updater/`
@@ -89,6 +93,10 @@ Do not assume `codex-app/` is pristine. If behavior differs from `install.sh`, p
   The native packages include `/usr/bin/codex-update-manager`, `/usr/lib/systemd/user/codex-update-manager.service`, and a minimal rebuild bundle under `/opt/codex-desktop/update-builder`.
 - Privilege boundary:
   The updater runs unprivileged. It only escalates at install time via `pkexec /usr/bin/codex-update-manager install-deb --path <deb>` or `pkexec /usr/bin/codex-update-manager install-rpm --path <rpm>`.
+- Failed privileged installs:
+  A failed or cancelled `pkexec` install now stays in `Failed` and does not auto-retry every reconcile cycle. Check `service.log`, fix the root cause, and retry by waiting for the next rebuild or rebuilding a newer package.
+- Package removal:
+  Debian and RPM removal now make a best-effort attempt to stop and disable `codex-update-manager.service` for active user sessions. If a user manager is unavailable, manual cleanup is still `systemctl --user disable --now codex-update-manager.service`.
 
 ## Crate Versioning
 
