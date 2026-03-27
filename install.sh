@@ -379,8 +379,8 @@ cd "$SCRIPT_DIR"
 echo "$$" > "$APP_PID_FILE"
 exec "$SCRIPT_DIR/electron" \
     --no-sandbox \
-    --class=codex-desktop \
-    --app-id=codex-desktop \
+    --class=Codex \
+    --app-id=Codex \
     --ozone-platform-hint=auto \
     --disable-gpu-sandbox \
     --enable-features=WaylandWindowDecorations \
